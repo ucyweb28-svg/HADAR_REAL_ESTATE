@@ -1,6 +1,30 @@
 {
+  "nav": {
+    "method": "Méthode",
+    "groupPurchase": "Achats groupés",
+    "zones": "Zones",
+    "contact": "Contact"
+  },
   "home": {
-    "hero_title": "Votre conseil stratégique pour investir en Israël",
-    "hero_subtitle": "Sourcing, analyse, négociation et suivi — un accompagnement complet pour acheter en toute confiance."
+    "hero": {
+      "slides": {
+        "jerusalem": {
+          "title": "Votre conseil stratégique pour investir en Israël",
+          "subtitle": "Sourcing, analyse, négociation et suivi — un accompagnement complet pour acheter en toute confiance."
+        },
+        "telaviv": {
+          "title": "Des transactions individuelles suivies de A à Z",
+          "subtitle": "Résidentiel, location, investissement — nous négocions et vous accompagnons à chaque étape."
+        },
+        "batyam": {
+          "title": "Une présence sur les meilleures zones d'Israël",
+          "subtitle": "Jérusalem, Tel Aviv, Bat Yam — une connaissance fine du terrain pour saisir les bonnes opportunités."
+        },
+        "entrance": {
+          "title": "Une expertise terrain, une approche discrète",
+          "subtitle": "Coordination complète avec promoteurs, avocats et banques — vous n'êtes jamais seul."
+        }
+      }
+    }
   }
 }

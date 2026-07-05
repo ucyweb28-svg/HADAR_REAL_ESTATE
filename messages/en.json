@@ -1,6 +1,30 @@
 {
+  "nav": {
+    "method": "Method",
+    "groupPurchase": "Group purchases",
+    "zones": "Areas",
+    "contact": "Contact"
+  },
   "home": {
-    "hero_title": "Your strategic advisor for real estate in Israel",
-    "hero_subtitle": "Sourcing, analysis, negotiation and follow-up — complete support to buy with confidence."
+    "hero": {
+      "slides": {
+        "jerusalem": {
+          "title": "Your strategic advisor for investing in Israel",
+          "subtitle": "Sourcing, analysis, negotiation and follow-up — comprehensive support to buy with confidence."
+        },
+        "telaviv": {
+          "title": "Individual transactions managed from A to Z",
+          "subtitle": "Residential, rental, investment — we negotiate and support you at every step."
+        },
+        "batyam": {
+          "title": "Present across Israel's finest areas",
+          "subtitle": "Jerusalem, Tel Aviv, Bat Yam — deep local knowledge to seize the right opportunities."
+        },
+        "entrance": {
+          "title": "Field expertise, a discreet approach",
+          "subtitle": "Full coordination with developers, lawyers and banks — you are never alone."
+        }
+      }
+    }
   }
 }

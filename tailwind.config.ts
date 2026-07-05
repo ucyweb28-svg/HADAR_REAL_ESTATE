@@ -9,11 +9,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        ink: "#031927",
+        blue: "#233C58",
+        crimson: "#5C0029",
+        ember: "#BA5C12",
+        linen: "#F2E9DC",
+      },
+      fontFamily: {
+        heading: ["var(--font-heading)"],
+        body: ["var(--font-body)"],
+        hebrew: ["var(--font-hebrew)"],
       },
     },
   },
   plugins: [],
 };
+
 export default config;

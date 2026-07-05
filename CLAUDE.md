@@ -1,8 +1,8 @@
 Projet : Hadar Real Estate — cabinet privé de conseil en acquisition immobilière en Israël
-Repo : github.com/ucyweb28-svg/HADAR_REAL_ESTATE (créé, premier push en cours)
-Déploiement : Vercel (pas encore connecté — sous-domaine auto pour l'instant, domaine custom transféré plus tard)
+Repo : github.com/ucyweb28-svg/HADAR_REAL_ESTATE (premier push fait)
+Déploiement : Vercel — hadar-real-estate.vercel.app (connecté, déploiement auto sur push main)
 
-Stack : Next.js 14 App Router, TypeScript strict, Tailwind CSS v4,
+Stack : Next.js 14 App Router, TypeScript strict, Tailwind CSS v3.4,
 Framer Motion, next-intl (FR/EN/HE avec RTL natif dès la V1)
 
 Positionnement :
@@ -59,10 +59,11 @@ Communication : français
 Mode de travail : Claude.ai (stratégie) → Claude Code (exécution)
 
 État actuel :
-- Scaffold Next.js 14 fonctionnel, i18n configuré, /fr /en /he testés (200)
-- npx tsc --noEmit propre, aucune erreur TypeScript
-- git init fait, git config identity fait
-- Premier commit/push en cours vers GitHub
-- Vercel non connecté
-- Palette et fonts définitives validées ci-dessus — pas encore intégrées
-  dans le code (tailwind.config à mettre à jour)
+- Scaffold fonctionnel, i18n fr/en/he OK
+- Repo GitHub pushé, Vercel connecté et déployé (hadar-real-estate.vercel.app)
+- /fr vérifié en ligne, /en et /he à vérifier en ligne
+- Palette et fonts définitives intégrées dans le code (tailwind.config,
+  chargement conditionnel par locale via app/fonts/latin.ts et
+  app/fonts/hebrew.ts)
+- Hero fonctionnel : 4 slides en WebP, nav traduite via next-intl, classes
+  logiques RTL (start-/end-)
