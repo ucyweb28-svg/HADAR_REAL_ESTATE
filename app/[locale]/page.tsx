@@ -3,10 +3,19 @@
 import { useTranslations, useLocale } from 'next-intl';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { locales } from '@/i18n';
+import { ArrowUpRight } from 'lucide-react';
+import MenuOverlay from './MenuOverlay';
+
+const scrollCtaVariants = {
+  rest: { scale: 1 },
+  hover: { scale: 1.05 },
+};
+
+const scrollCtaIconVariants = {
+  rest: { rotate: 0 },
+  hover: { rotate: 45 },
+};
 
 const slides = [
   {
@@ -41,7 +50,7 @@ export default function HomePage() {
   const locale = useLocale();
   const bodyFont = locale === 'he' ? 'font-hebrew' : 'font-body';
   const [current, setCurrent] = useState(0);
-  const pathname = usePathname();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -50,10 +59,13 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
-  function switchLocaleHref(locale: string) {
-    const segments = pathname.split('/');
-    segments[1] = locale;
-    return segments.join('/') || '/';
+  function handleScrollNext() {
+    const next = document.getElementById('next');
+    if (next) {
+      next.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+    }
   }
 
   const activeSlide = slides[current];
@@ -98,29 +110,14 @@ export default function HomePage() {
           <span className="font-heading text-xl tracking-widest text-linen">
             HADAR
           </span>
-          <div className={`hidden gap-8 ${bodyFont} text-sm tracking-wide text-linen md:flex`}>
-            <span className="cursor-pointer opacity-90 hover:opacity-100">
-              {tNav('method')}
-            </span>
-            <span className="cursor-pointer opacity-90 hover:opacity-100">
-              {tNav('groupPurchase')}
-            </span>
-            <span className="cursor-pointer opacity-90 hover:opacity-100">
-              {tNav('zones')}
-            </span>
-          </div>
           <div className="flex items-center gap-5">
-            <div className="flex gap-3">
-              {locales.map((loc) => (
-                <Link
-                  key={loc}
-                  href={switchLocaleHref(loc)}
-                  className="font-body text-xs uppercase tracking-wide text-linen/70 transition hover:text-linen"
-                >
-                  {loc}
-                </Link>
-              ))}
-            </div>
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen(true)}
+              className={`${bodyFont} text-sm tracking-wide text-linen transition hover:opacity-80`}
+            >
+              {tNav('menu')}
+            </button>
             <button
               className={`rounded-full border border-linen px-5 py-2 ${bodyFont} text-sm font-medium text-linen transition hover:bg-linen hover:text-ink`}
             >
@@ -128,6 +125,13 @@ export default function HomePage() {
             </button>
           </div>
         </nav>
+
+        <MenuOverlay
+          isOpen={isMenuOpen}
+          onClose={() => setIsMenuOpen(false)}
+          locale={locale}
+          bodyFont={bodyFont}
+        />
 
         {/* Texte principal, dynamique par slide */}
         <div className="absolute inset-x-0 bottom-24 px-8 md:px-12">
@@ -139,10 +143,10 @@ export default function HomePage() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className={`${bodyFont} max-w-2xl text-3xl font-bold leading-tight text-linen md:text-5xl`}>
+              <h1 className={`${bodyFont} max-w-2xl text-balance text-3xl font-bold leading-tight text-linen md:text-5xl`}>
                 {t(`${activeSlide.key}.title`)}
               </h1>
-              <p className={`mt-4 max-w-xl ${bodyFont} text-base text-linen/90 md:text-lg`}>
+              <p className={`mt-4 max-w-xl ${bodyFont} text-pretty text-base text-linen/90 md:text-lg`}>
                 {t(`${activeSlide.key}.subtitle`)}
               </p>
             </motion.div>
@@ -162,6 +166,22 @@ export default function HomePage() {
             />
           ))}
         </div>
+
+        {/* Bouton flottant : défiler vers la section suivante */}
+        <motion.button
+          type="button"
+          onClick={handleScrollNext}
+          variants={scrollCtaVariants}
+          initial="rest"
+          whileHover="hover"
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          className="absolute bottom-8 end-8 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-ember md:bottom-12 md:end-12 md:h-14 md:w-14"
+          aria-label="Découvrir la suite"
+        >
+          <motion.span variants={scrollCtaIconVariants} transition={{ duration: 0.3, ease: 'easeOut' }}>
+            <ArrowUpRight className="h-5 w-5 text-ink md:h-6 md:w-6" />
+          </motion.span>
+        </motion.button>
       </div>
     </main>
   );

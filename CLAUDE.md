@@ -36,10 +36,16 @@ immo" ou trop commercial. Inspirer confiance, discrétion, expertise terrain.
 
 Palette :
 - #031927 (ink black, fond sombre principal)
-- #233C58 (deep space blue, secondaire / sections)
-- #5C0029 (crimson violet, accent profond)
-- #BA5C12 (autumn ember, accent chaud / CTA)
+- #04314E (deep space blue, secondaire / sections)
+- #3D001C (crimson violet, accent profond)
+- #FC7A1E (autumn ember, accent chaud / CTA)
 - #F2E9DC (linen, fond clair / texte sur fond sombre)
+
+Règles de contraste :
+- Texte sur fond ink, blue ou crimson : toujours linen
+- Texte sur fond linen : toujours ink, jamais ember
+- ember : uniquement en fond de bouton/icône/badge avec texte ink dessus,
+  jamais en fond de texte long, jamais de texte ember sur fond linen
 
 Fonts :
 - FR/EN : Trap (headings) + Montserrat (body)

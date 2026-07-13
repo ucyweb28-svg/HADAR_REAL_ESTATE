@@ -10,9 +10,9 @@ const config: Config = {
     extend: {
       colors: {
         ink: "#031927",
-        blue: "#233C58",
-        crimson: "#5C0029",
-        ember: "#BA5C12",
+        blue: "#04314E",
+        crimson: "#3D001C",
+        ember: "#FC7A1E",
         linen: "#F2E9DC",
       },
       fontFamily: {

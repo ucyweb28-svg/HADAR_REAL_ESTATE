@@ -1,9 +1,13 @@
 {
   "nav": {
+    "menu": "Menu",
+    "closeMenu": "Fermer le menu",
     "method": "Méthode",
     "groupPurchase": "Achats groupés",
+    "individualTransactions": "Transactions individuelles",
     "zones": "Zones",
-    "contact": "Contact"
+    "founder": "Fondateur",
+    "contact": "Nous contacter"
   },
   "home": {
     "hero": {

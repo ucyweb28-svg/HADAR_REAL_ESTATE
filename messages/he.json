@@ -1,8 +1,12 @@
 {
   "nav": {
+    "menu": "תפריט",
+    "closeMenu": "סגור תפריט",
     "method": "השיטה",
     "groupPurchase": "רכישות קבוצתיות",
+    "individualTransactions": "עסקאות פרטניות",
     "zones": "אזורים",
+    "founder": "המייסד",
     "contact": "צור קשר"
   },
   "home": {

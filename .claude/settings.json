@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node \"/c/Users/Yonathan/AppData/Local/npm-cache/_npx/e41f203b7505f1fb/screenshot-fr-retry.mjs\")",
+      "Bash(npm install *)",
+      "Bash(node \"/c/Users/Yonathan/AppData/Local/npm-cache/_npx/e41f203b7505f1fb/screenshot-cta.mjs\")",
+      "Bash(node \"/c/Users/Yonathan/AppData/Local/npm-cache/_npx/e41f203b7505f1fb/test-menu.mjs\")",
+      "Bash(node \"/c/Users/Yonathan/AppData/Local/npm-cache/_npx/e41f203b7505f1fb/test-hover.mjs\")",
+      "Bash(node \"/c/Users/Yonathan/AppData/Local/npm-cache/_npx/e41f203b7505f1fb/test-hover-links.mjs\")",
+      "Bash(node -e ' *)",
+      "Bash(node \"/c/Users/Yonathan/AppData/Local/npm-cache/_npx/e41f203b7505f1fb/debug-hover.mjs\")",
+      "Bash(node \"/c/Users/Yonathan/AppData/Local/npm-cache/_npx/e41f203b7505f1fb/test-menu-v2.mjs\")",
+      "Bash(node \"/c/Users/Yonathan/AppData/Local/npm-cache/_npx/e41f203b7505f1fb/test-texture.mjs\")"
+    ]
+  }
+}
