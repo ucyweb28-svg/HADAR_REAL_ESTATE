@@ -113,18 +113,22 @@ export default function HomePage() {
             HADAR
           </span>
           <div className="flex items-center gap-5">
-            <button
+            <motion.button
               type="button"
               onClick={() => setIsMenuOpen(true)}
-              className={`${bodyFont} text-sm tracking-wide text-linen transition hover:opacity-80`}
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className={`rounded-full border border-linen/30 bg-transparent px-5 py-2 ${bodyFont} text-sm font-medium tracking-wide text-linen transition-[border-color,box-shadow] duration-[250ms] hover:border-ember hover:shadow-[0_0_24px_rgba(252,122,30,0.45)]`}
             >
               {tNav('menu')}
-            </button>
-            <button
-              className={`hidden rounded-full border border-linen px-5 py-2 ${bodyFont} text-sm font-medium text-linen transition hover:bg-linen hover:text-ink md:block`}
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className={`hidden rounded-full border border-linen/30 bg-transparent px-5 py-2 ${bodyFont} text-sm font-medium tracking-wide text-linen transition-[border-color,box-shadow] duration-[250ms] hover:border-ember hover:shadow-[0_0_24px_rgba(252,122,30,0.45)] md:block`}
             >
               {tNav('contactCta')}
-            </button>
+            </motion.button>
           </div>
         </nav>
 
