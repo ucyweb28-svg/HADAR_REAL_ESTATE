@@ -6,6 +6,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, X } from 'lucide-react';
+import {
+  House,
+  Compass,
+  Buildings,
+  UserCircle,
+  EnvelopeSimple,
+} from '@phosphor-icons/react';
 import { locales } from '@/i18n';
 
 const noiseSvg = encodeURIComponent(
@@ -64,13 +71,16 @@ export default function MenuOverlay({
     return segments.join('/') || '/';
   }
 
+  function handleHome() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    onClose();
+  }
+
   const links = [
-    { label: tNav('method') },
-    { label: tNav('projects') },
-    { label: tNav('founder') },
-    // Contact : même comportement que le bouton CTA. La section n'existe pas
-    // encore, on se contente donc de fermer le menu pour l'instant.
-    { label: tNav('contact'), onClick: onClose },
+    { label: tNav('home'), Icon: House, onClick: handleHome },
+    { label: tNav('method'), Icon: Compass },
+    { label: tNav('projects'), Icon: Buildings },
+    { label: tNav('founder'), Icon: UserCircle },
   ];
 
   // Desktop : panneau ancré côté "end" qui glisse depuis ce même côté.
@@ -145,26 +155,42 @@ export default function MenuOverlay({
                     key={link.label}
                     type="button"
                     onClick={link.onClick}
-                    className="group flex w-full items-center border-b border-linen/10 py-6 text-start transition-colors duration-300 hover:border-linen/30 md:py-8"
+                    className="group flex w-full items-center border-b border-linen/10 py-4 text-start transition-colors duration-300 hover:border-linen/30 md:py-5"
                   >
-                    <span className={`${bodyFont} w-12 shrink-0 pe-6 text-sm text-ember md:w-16 md:pe-8`}>
+                    <span className={`${bodyFont} w-9 shrink-0 pe-4 text-xs text-ember md:w-12 md:pe-6 md:text-sm`}>
                       {String(index + 1).padStart(2, '0')}
                     </span>
+                    <link.Icon
+                      size={24}
+                      weight="light"
+                      className="me-3 shrink-0 text-linen/60 transition-colors duration-300 group-hover:text-linen md:me-4"
+                    />
                     <span
-                      className={`${bodyFont} flex-1 text-start text-4xl font-bold text-linen/60 transition-colors duration-300 group-hover:text-linen md:text-6xl`}
+                      className={`${bodyFont} flex-1 text-start text-xl font-bold text-linen/60 transition-colors duration-300 group-hover:text-linen sm:text-2xl md:text-3xl lg:text-4xl`}
                     >
                       {link.label}
                     </span>
-                    <ArrowUpRight className="h-8 w-8 shrink-0 -translate-x-2 text-linen opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:text-ember group-hover:opacity-100" />
+                    <ArrowUpRight className="h-5 w-5 shrink-0 -translate-x-2 text-linen opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:text-ember group-hover:opacity-100 md:h-6 md:w-6" />
                   </button>
                 ))}
               </nav>
 
-              {/* Sélecteur de langue — segmented control */}
-              <div
-                className={`${bodyFont} inline-flex items-center gap-1 self-start rounded-full bg-linen/10 p-1`}
-              >
-                {locales.map((loc) => {
+              {/* Bas du menu : CTA Contact + sélecteur de langue */}
+              <div className="flex flex-col items-start gap-4">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className={`${bodyFont} inline-flex min-h-[44px] items-center gap-2 rounded-full bg-linen px-8 py-3 text-sm font-medium text-ink transition hover:opacity-90`}
+                >
+                  <EnvelopeSimple size={20} weight="light" />
+                  {tNav('contact')}
+                </button>
+
+                {/* Sélecteur de langue — segmented control */}
+                <div
+                  className={`${bodyFont} inline-flex items-center gap-1 rounded-full bg-linen/10 p-1`}
+                >
+                  {locales.map((loc) => {
                   const active = loc === locale;
                   return (
                     <Link
@@ -186,6 +212,7 @@ export default function MenuOverlay({
                     </Link>
                   );
                 })}
+                </div>
               </div>
             </div>
           </motion.div>

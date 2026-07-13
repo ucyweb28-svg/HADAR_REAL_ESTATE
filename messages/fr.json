@@ -2,10 +2,11 @@
   "nav": {
     "menu": "Menu",
     "closeMenu": "Fermer le menu",
+    "home": "Accueil",
     "method": "Méthode",
     "projects": "Projets",
     "founder": "Fondateur",
-    "contact": "Contact",
+    "contact": "Nous contacter",
     "contactCta": "Nous contacter"
   },
   "home": {
