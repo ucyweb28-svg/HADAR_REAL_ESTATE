@@ -110,23 +110,12 @@ export default function HomePage() {
   const bodyFont = locale === 'he' ? 'font-hebrew' : 'font-body';
   const [current, setCurrent] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  // Vidéos uniquement sur desktop (≥ lg / 1024px). Tablette + mobile (< lg)
-  // gardent l'image statique en fond, avec exactement le même regroupement de
-  // slides que desktop (0-1 sur un fond, 2-3 sur l'autre).
-  const [isDesktop, setIsDesktop] = useState(false);
-  // Les 2 vidéos sont montées en permanence et jouent en fond ; on ne fait que
-  // croiser leur opacité. On n'affiche une vidéo cible qu'une fois qu'elle a
-  // déclenché onCanPlay (isReady), pour ne pas fondre sur une frame non chargée.
+  // Le hero n'affiche QUE les vidéos, sur tous les appareils. Les 2 vidéos sont
+  // montées en permanence et jouent en fond ; on ne fait que croiser leur
+  // opacité. On n'affiche une vidéo cible qu'une fois qu'elle a déclenché
+  // onCanPlay (isReady), pour ne pas fondre sur une frame non chargée.
   const [ready, setReady] = useState<[boolean, boolean]>([false, false]);
   const [displayedIndex, setDisplayedIndex] = useState(0);
-
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1024px)');
-    const update = () => setIsDesktop(mq.matches);
-    update();
-    mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
-  }, []);
 
   function handleVideoCanPlay(index: number, el: HTMLVideoElement) {
     // Garantit que la vidéo tourne en fond même invisible (frame toujours fraîche).
@@ -166,7 +155,6 @@ export default function HomePage() {
 
   const activeSlide = slides[current];
   const videoIndex = activeSlide.video;
-  const activeVideo = videos[videoIndex];
 
   // On ne bascule l'affichage vers la vidéo cible que lorsqu'elle est prête :
   // sinon on garde la précédente visible (pas de flash noir / frame vide).
@@ -179,43 +167,31 @@ export default function HomePage() {
       {/* Section Hero (fond ink) */}
       <div className="md:p-6">
         <div className="relative h-[100dvh] w-full overflow-hidden md:h-[calc(100vh-3rem)] md:rounded-2xl">
-        {/* Fond vidéo (desktop ≥ lg uniquement) — les 2 vidéos sont montées en
+        {/* Fond vidéo (TOUS les appareils) — les 2 vidéos sont montées en
             permanence, préchargées et jouées en fond ; on ne fait que croiser
             leur opacité (jamais de démontage/remontage → plus de résidu ni de
-            flash noir). Pas de scale Ken Burns (le mouvement du drone suffit).
-            Tablette + mobile (< lg) : image poster de la vidéo active, donc même
-            regroupement (0-1 → hero-jerusalem, 2-3 → hero-batyam), l'image ne
-            change qu'entre le texte 1 et le texte 2. */}
-        {isDesktop ? (
-          videos.map((video, i) => (
-            <motion.video
-              key={video.src}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              poster={video.poster}
-              onCanPlay={(e) => handleVideoCanPlay(i, e.currentTarget)}
-              initial={false}
-              animate={{ opacity: i === displayedIndex ? 1 : 0 }}
-              transition={{ duration: 1, ease: 'easeInOut' }}
-              style={{ willChange: 'opacity' }}
-              className="absolute inset-0 h-full w-full object-cover"
-              src={video.src}
-            />
-          ))
-        ) : (
-          <Image
-            src={activeVideo.poster}
-            alt={activeVideo.alt}
-            fill
-            priority
-            sizes="100vw"
-            quality={90}
-            className="object-cover"
+            flash noir), et seulement une fois la vidéo cible prête (onCanPlay).
+            Pas de scale Ken Burns (le mouvement du drone suffit). Aucune image
+            statique n'est jamais affichée : le poster ne sert que de filet
+            pendant le très bref chargement initial avant la 1re frame vidéo. */}
+        {videos.map((video, i) => (
+          <motion.video
+            key={video.src}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster={video.poster}
+            onCanPlay={(e) => handleVideoCanPlay(i, e.currentTarget)}
+            initial={false}
+            animate={{ opacity: i === displayedIndex ? 1 : 0 }}
+            transition={{ duration: 1, ease: 'easeInOut' }}
+            style={{ willChange: 'opacity' }}
+            className="absolute inset-0 h-full w-full object-cover"
+            src={video.src}
           />
-        )}
+        ))}
 
         {/* Dégradé haut : lisibilité du nav sur les ~20% supérieurs, transparent
             ensuite (le centre reste dégagé pour voir le ciel / le mouvement) */}
@@ -349,7 +325,7 @@ export default function HomePage() {
           <div className="relative aspect-[4/5] overflow-hidden rounded-2xl">
             <motion.div style={{ scale: imageScale }} className="relative h-full w-full">
               <Image
-                src="/images/hero/hero-telaviv.webp"
+                src="/images/hero/hero-batyam.webp"
                 alt="Projet immobilier en Israël"
                 fill
                 sizes="(min-width: 768px) 50vw, 100vw"

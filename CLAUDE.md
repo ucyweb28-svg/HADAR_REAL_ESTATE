@@ -100,8 +100,10 @@ app/fonts/         — latin.ts (Montserrat + Trap), hebrew.ts (Rubik), *.otf Tr
 messages/          — fr.json, en.json, he.json (clés i18n next-intl)
 public/
   logo/logo.png
-  images/hero/     — hero-jerusalem.webp, hero-telaviv.webp, hero-batyam.webp,
-                     hero-entrance.webp (4K 3840×2160, ~270–670 Ko)
+  images/hero/     — hero-jerusalem.webp, hero-batyam.webp (4K 3840×2160).
+                     Seules ces 2 images subsistent : posters techniques des
+                     vidéos + image de la section Positionnement (batyam).
+                     hero-telaviv.webp et hero-entrance.webp ont été SUPPRIMÉS.
   videos/          — hero-video-cityscape.mp4 (~4 Mo), hero-video-ramatgan.mp4 (~2,9 Mo)
 
 Clés i18n (messages/*.json) :
@@ -114,21 +116,22 @@ Clés i18n (messages/*.json) :
 ÉTAT DES COMPOSANTS (construit & validé)
 ================================================================================
 
-HERO (page.tsx) — carrousel VIDÉO :
+HERO (page.tsx) — carrousel VIDÉO (uniquement des vidéos, sur TOUS les appareils) :
 - 2 vidéos de fond seulement : cityscape (videos[0]) et ramatgan (videos[1]).
 - 4 blocs de texte (titre + sous-titre) rattachés par paire à une vidéo :
   slides 0-1 (jerusalem, telaviv) → vidéo cityscape ; slides 2-3 (batyam,
   entrance) → vidéo ramatgan. Le texte change toutes les 6 s ; passer entre 2
   textes d'une même vidéo NE redémarre PAS la vidéo.
-- Les 4 images WebP ne sont plus dans le carrousel : uniquement poster/fallback
-  des vidéos et fallback mobile.
+- AUCUNE image statique en fond, sur aucun appareil. Les 2 images WebP restantes
+  (jerusalem, batyam) ne servent QUE d'attribut `poster` technique (filet
+  pendant le très bref chargement initial avant la 1re frame). Plus de branche
+  image / plus de matchMedia isDesktop : les vidéos jouent aussi sur mobile
+  (autoPlay muted loop playsInline).
 - Transition sans résidu : les 2 <video> sont montées en permanence (absolute
   inset-0, preload="auto"), jouent en fond en continu même invisibles ; on ne
   fait que croiser leur opacité (Framer), et seulement une fois la vidéo cible
   prête (état isReady via onCanPlay) → plus de flash noir. Pas de scale Ken Burns
   (provoquait un tremblement) ; willChange:'opacity'.
-- Mobile (< md) : pas de vidéo chargée (bande passante) → on affiche le poster
-  image de la vidéo active. Détection via matchMedia (isDesktop).
 - Dégradés renforcés : haut from-ink/80 (h-1/5, lisibilité nav) ; bas
   from-ink/90 via-ink/40 (h-2/3, lisibilité titre même sur frames lumineuses).
   Centre dégagé pour voir le ciel / le mouvement.
@@ -156,7 +159,7 @@ MENU (MenuOverlay.tsx) :
 SECTIONS DE PAGE construites (page.tsx, sous le hero) :
 - Positionnement (id="next", fond linen clair, texte ink) : titre + 3 paragraphes
   qui apparaissent en cascade au scroll (whileInView, stagger 130 ms, once) +
-  image (hero-telaviv.webp) qui zoome 0.85→1 liée au scroll (useScroll/
+  image (hero-batyam.webp) qui zoome 0.85→1 liée au scroll (useScroll/
   useTransform). C'est la cible du bouton flèche « défiler » du hero.
 - Chiffres (« Hadar en chiffres », fond blue, texte linen, chiffres ember) :
   3 compteurs qui s'incrémentent 0→valeur au scroll (StatNumber, useMotionValue
