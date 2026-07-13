@@ -1,9 +1,17 @@
 'use client';
 
 import { useTranslations, useLocale } from 'next-intl';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+  useMotionValue,
+  useInView,
+  animate,
+} from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import MenuOverlay from './MenuOverlay';
 
@@ -17,40 +25,113 @@ const scrollCtaIconVariants = {
   hover: { rotate: 45 },
 };
 
-const slides = [
+// Carrousel : on alterne vidéo / image. Les slides « vidéo » gardent leur image
+// existante en poster (chargement + navigateurs sans autoplay) et retombent sur
+// cette image sur mobile (la vidéo n'est chargée que sur desktop).
+type Slide = {
+  key: string;
+  poster: string;
+  alt: string;
+  overlay: string;
+  video?: string;
+};
+
+const slides: Slide[] = [
   {
     key: 'jerusalem',
-    src: '/images/hero/hero-jerusalem.webp',
+    poster: '/images/hero/hero-jerusalem.webp',
+    video: '/videos/hero-video-cityscape.mp4',
     alt: 'Villa à Jérusalem',
     overlay: 'from-ink/80 via-ink/10',
   },
   {
     key: 'telaviv',
-    src: '/images/hero/hero-telaviv.webp',
+    poster: '/images/hero/hero-telaviv.webp',
     alt: 'Immeuble à Tel Aviv',
     overlay: 'from-ink/90 via-ink/40',
   },
   {
     key: 'batyam',
-    src: '/images/hero/hero-batyam.webp',
+    poster: '/images/hero/hero-batyam.webp',
+    video: '/videos/hero-video-ramatgan.mp4',
     alt: 'Bord de mer à Bat Yam',
     overlay: 'from-ink/90 via-ink/50',
   },
   {
     key: 'entrance',
-    src: '/images/hero/hero-entrance.webp',
+    poster: '/images/hero/hero-entrance.webp',
     alt: 'Entrée de villa',
     overlay: 'from-ink/80 via-ink/10',
   },
 ];
 
+// Courbe d'easing douce (easeOutExpo-like), typée en tuple pour Framer Motion.
+const easeOut: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+// Pattern 1 — texte en cascade : le conteneur orchestre l'apparition
+// décalée (stagger) de chaque bloc enfant, déclenchée au scroll.
+const cascadeContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.13 } },
+};
+
+const cascadeItem = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut } },
+};
+
+// Pattern 3 — chiffres animés. TODO: remplacer par les vraies statistiques de Hadar
+const stats = [
+  { key: 'experience', value: 3, suffix: '' },
+  { key: 'transactions', value: 40, suffix: '+' },
+  { key: 'zones', value: 3, suffix: '' },
+];
+
+// Compteur qui s'incrémente de 0 à sa valeur finale quand il entre dans le
+// viewport (une seule fois), via useMotionValue + animate().
+function StatNumber({ value, suffix }: { value: number; suffix: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const count = useMotionValue(0);
+  const display = useTransform(count, (v) => `${Math.round(v)}${suffix}`);
+
+  useEffect(() => {
+    if (!inView) return;
+    const controls = animate(count, value, { duration: 1.8, ease: easeOut });
+    return () => controls.stop();
+  }, [inView, value, count]);
+
+  return <motion.span ref={ref}>{display}</motion.span>;
+}
+
 export default function HomePage() {
   const t = useTranslations('home.hero.slides');
   const tNav = useTranslations('nav');
+  const tPos = useTranslations('home.positioning');
+  const tStats = useTranslations('home.stats');
   const locale = useLocale();
   const bodyFont = locale === 'he' ? 'font-hebrew' : 'font-body';
   const [current, setCurrent] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // Vidéos uniquement sur desktop : sur mobile on garde le poster image.
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)');
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  // Pattern 2 — zoom au scroll : l'image de la section Positionnement grandit
+  // (0.85 → 1) à mesure que la section entre dans le viewport, liée au scroll.
+  const positioningRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: positioningRef,
+    offset: ['start end', 'center center'],
+  });
+  const imageScale = useTransform(scrollYProgress, [0, 1], [0.85, 1]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -71,8 +152,10 @@ export default function HomePage() {
   const activeSlide = slides[current];
 
   return (
-    <main className="min-h-screen bg-ink md:p-6">
-      <div className="relative h-[100dvh] w-full overflow-hidden md:h-[calc(100vh-3rem)] md:rounded-2xl">
+    <main className="min-h-screen bg-ink">
+      {/* Section Hero (fond ink) */}
+      <div className="md:p-6">
+        <div className="relative h-[100dvh] w-full overflow-hidden md:h-[calc(100vh-3rem)] md:rounded-2xl">
         {/* Slides image */}
         <AnimatePresence>
           <motion.div
@@ -89,22 +172,39 @@ export default function HomePage() {
               transition={{ duration: 6, ease: 'linear' }}
               className="relative h-full w-full"
             >
-              <Image
-                src={activeSlide.src}
-                alt={activeSlide.alt}
-                fill
-                priority
-                sizes="100vw"
-                quality={90}
-                className="object-cover"
-              />
+              {activeSlide.video && isDesktop ? (
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  poster={activeSlide.poster}
+                  className="h-full w-full object-cover"
+                >
+                  <source src={activeSlide.video} type="video/mp4" />
+                </video>
+              ) : (
+                <Image
+                  src={activeSlide.poster}
+                  alt={activeSlide.alt}
+                  fill
+                  priority
+                  sizes="100vw"
+                  quality={90}
+                  className="object-cover"
+                />
+              )}
             </motion.div>
           </motion.div>
         </AnimatePresence>
 
-        {/* Dégradé bas, réglé par image */}
+        {/* Dégradé haut : lisibilité du nav sur les ~20% supérieurs, transparent
+            ensuite (le centre reste dégagé pour voir le ciel / le mouvement) */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-1/5 bg-gradient-to-b from-ink/70 to-transparent" />
+
+        {/* Dégradé bas, réglé par image (lisibilité du titre) */}
         <div
-          className={`absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t ${activeSlide.overlay} to-transparent`}
+          className={`pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t ${activeSlide.overlay} to-transparent`}
         />
 
         {/* Nav overlay */}
@@ -194,7 +294,72 @@ export default function HomePage() {
             <ArrowUpRight className="h-5 w-5 text-ink md:h-6 md:w-6" />
           </motion.span>
         </motion.button>
+        </div>
       </div>
+
+      {/* Section Positionnement (fond linen clair — contraste avec le hero ink).
+          Pattern 1 : texte en cascade au scroll. Pattern 2 : zoom de l'image. */}
+      <section
+        id="next"
+        ref={positioningRef}
+        className={`${bodyFont} relative overflow-hidden bg-linen px-6 py-24 text-ink transition-colors duration-700 md:px-12 md:py-32`}
+      >
+        <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2 md:gap-16">
+          <motion.div
+            variants={cascadeContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            <motion.h2
+              variants={cascadeItem}
+              className="text-balance text-3xl font-bold leading-tight md:text-4xl"
+            >
+              {tPos('title')}
+            </motion.h2>
+            <motion.p variants={cascadeItem} className="mt-6 text-pretty text-base leading-relaxed text-ink/80 md:text-lg">
+              {tPos('p1')}
+            </motion.p>
+            <motion.p variants={cascadeItem} className="mt-4 text-pretty text-base leading-relaxed text-ink/80 md:text-lg">
+              {tPos('p2')}
+            </motion.p>
+            <motion.p variants={cascadeItem} className="mt-4 text-pretty text-base leading-relaxed text-ink/80 md:text-lg">
+              {tPos('p3')}
+            </motion.p>
+          </motion.div>
+
+          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl">
+            <motion.div style={{ scale: imageScale }} className="relative h-full w-full">
+              <Image
+                src="/images/hero/hero-telaviv.webp"
+                alt="Projet immobilier en Israël"
+                fill
+                sizes="(min-width: 768px) 50vw, 100vw"
+                quality={90}
+                className="object-cover"
+              />
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section Hadar en chiffres (fond blue foncé — re-bascule sombre).
+          Pattern 3 : chiffres qui s'incrémentent au scroll. */}
+      <section className={`${bodyFont} bg-blue px-6 py-24 text-linen transition-colors duration-700 md:px-12 md:py-32`}>
+        <div className="mx-auto max-w-6xl">
+          <h2 className="text-center text-2xl font-bold md:text-3xl">{tStats('title')}</h2>
+          <div className="mt-14 grid gap-12 sm:grid-cols-3">
+            {stats.map((stat) => (
+              <div key={stat.key} className="text-center">
+                <div className="text-5xl font-bold text-ember md:text-6xl">
+                  <StatNumber value={stat.value} suffix={stat.suffix} />
+                </div>
+                <p className="mt-3 text-sm text-linen/80 md:text-base">{tStats(stat.key)}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </main>
   );
 }

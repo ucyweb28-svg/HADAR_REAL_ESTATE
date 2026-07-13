@@ -29,6 +29,18 @@
           "subtitle": "Full coordination with developers, lawyers and banks — you are never alone."
         }
       }
+    },
+    "positioning": {
+      "title": "A private advisory firm, not an agency",
+      "p1": "Hadar Invest guides foreign buyers through their real estate projects in Israel: sourcing, analysis, negotiation and full follow-up, from the first viewing to the handover of the keys.",
+      "p2": "We operate on the ground — alongside developers, lawyers, banks and architects — to defend your interests at every step, with the utmost discretion.",
+      "p3": "A strategic vision of the Israeli market, serving families, private investors and family offices."
+    },
+    "stats": {
+      "title": "Hadar in numbers",
+      "experience": "years of experience",
+      "transactions": "transactions supported",
+      "zones": "areas covered"
     }
   }
 }

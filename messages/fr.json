@@ -29,6 +29,18 @@
           "subtitle": "Coordination complète avec promoteurs, avocats et banques — vous n'êtes jamais seul."
         }
       }
+    },
+    "positioning": {
+      "title": "Un cabinet privé de conseil, pas une agence",
+      "p1": "Hadar Invest accompagne les acquéreurs étrangers dans leurs projets immobiliers en Israël : sourcing, analyse, négociation et suivi complet, de la première visite à la remise des clés.",
+      "p2": "Nous opérons sur le terrain — aux côtés des promoteurs, avocats, banques et architectes — pour défendre vos intérêts à chaque étape, en toute discrétion.",
+      "p3": "Une vision stratégique du marché israélien, au service de familles, d'investisseurs privés et de family offices."
+    },
+    "stats": {
+      "title": "Hadar en chiffres",
+      "experience": "ans d'expérience",
+      "transactions": "transactions accompagnées",
+      "zones": "zones couvertes"
     }
   }
 }
