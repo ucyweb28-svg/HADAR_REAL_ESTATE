@@ -112,6 +112,11 @@ export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // Vidéos uniquement sur desktop : sur mobile on garde le poster image.
   const [isDesktop, setIsDesktop] = useState(false);
+  // Les 2 vidéos sont montées en permanence et jouent en fond ; on ne fait que
+  // croiser leur opacité. On n'affiche une vidéo cible qu'une fois qu'elle a
+  // déclenché onCanPlay (isReady), pour ne pas fondre sur une frame non chargée.
+  const [ready, setReady] = useState<[boolean, boolean]>([false, false]);
+  const [displayedIndex, setDisplayedIndex] = useState(0);
 
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 768px)');
@@ -120,6 +125,17 @@ export default function HomePage() {
     mq.addEventListener('change', update);
     return () => mq.removeEventListener('change', update);
   }, []);
+
+  function handleVideoCanPlay(index: number, el: HTMLVideoElement) {
+    // Garantit que la vidéo tourne en fond même invisible (frame toujours fraîche).
+    el.play().catch(() => {});
+    setReady((prev) => {
+      if (prev[index]) return prev;
+      const next: [boolean, boolean] = [...prev];
+      next[index] = true;
+      return next;
+    });
+  }
 
   // Pattern 2 — zoom au scroll : l'image de la section Positionnement grandit
   // (0.85 → 1) à mesure que la section entre dans le viewport, liée au scroll.
@@ -150,49 +166,51 @@ export default function HomePage() {
   const videoIndex = activeSlide.video;
   const activeVideo = videos[videoIndex];
 
+  // On ne bascule l'affichage vers la vidéo cible que lorsqu'elle est prête :
+  // sinon on garde la précédente visible (pas de flash noir / frame vide).
+  useEffect(() => {
+    if (ready[videoIndex]) setDisplayedIndex(videoIndex);
+  }, [videoIndex, ready]);
+
   return (
     <main className="min-h-screen bg-ink">
       {/* Section Hero (fond ink) */}
       <div className="md:p-6">
         <div className="relative h-[100dvh] w-full overflow-hidden md:h-[calc(100vh-3rem)] md:rounded-2xl">
-        {/* Fond vidéo — keyé par la vidéo (pas par le texte) : ne remonte donc
-            que lors d'un vrai changement de vidéo (texte 1 → 2). Pas de scale
-            Ken Burns sur la vidéo (le mouvement du drone suffit et le scale
-            provoquait un tremblement) : seule l'opacité s'anime au changement. */}
-        <AnimatePresence>
-          <motion.div
-            key={videoIndex}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
-            style={{ willChange: 'opacity' }}
-            className="absolute inset-0"
-          >
-            {isDesktop ? (
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                poster={activeVideo.poster}
-                className="h-full w-full object-cover"
-              >
-                <source src={activeVideo.src} type="video/mp4" />
-              </video>
-            ) : (
-              <Image
-                src={activeVideo.poster}
-                alt={activeVideo.alt}
-                fill
-                priority
-                sizes="100vw"
-                quality={90}
-                className="object-cover"
-              />
-            )}
-          </motion.div>
-        </AnimatePresence>
+        {/* Fond vidéo — les 2 vidéos sont montées en permanence, préchargées et
+            jouées en fond ; on ne fait que croiser leur opacité (jamais de
+            démontage/remontage → plus de résidu ni de flash noir). Pas de scale
+            Ken Burns (le mouvement du drone suffit). Sur mobile : poster image. */}
+        {isDesktop ? (
+          videos.map((video, i) => (
+            <motion.video
+              key={video.src}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              poster={video.poster}
+              onCanPlay={(e) => handleVideoCanPlay(i, e.currentTarget)}
+              initial={false}
+              animate={{ opacity: i === displayedIndex ? 1 : 0 }}
+              transition={{ duration: 1, ease: 'easeInOut' }}
+              style={{ willChange: 'opacity' }}
+              className="absolute inset-0 h-full w-full object-cover"
+              src={video.src}
+            />
+          ))
+        ) : (
+          <Image
+            src={activeVideo.poster}
+            alt={activeVideo.alt}
+            fill
+            priority
+            sizes="100vw"
+            quality={90}
+            className="object-cover"
+          />
+        )}
 
         {/* Dégradé haut : lisibilité du nav sur les ~20% supérieurs, transparent
             ensuite (le centre reste dégagé pour voir le ciel / le mouvement) */}
