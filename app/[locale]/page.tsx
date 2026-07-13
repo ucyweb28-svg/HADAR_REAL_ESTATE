@@ -71,8 +71,8 @@ export default function HomePage() {
   const activeSlide = slides[current];
 
   return (
-    <main className="min-h-screen bg-ink p-6">
-      <div className="relative h-[calc(100vh-3rem)] w-full overflow-hidden rounded-2xl">
+    <main className="min-h-screen bg-ink md:p-6">
+      <div className="relative h-[100dvh] w-full overflow-hidden md:h-[calc(100vh-3rem)] md:rounded-2xl">
         {/* Slides image */}
         <AnimatePresence>
           <motion.div
@@ -106,7 +106,7 @@ export default function HomePage() {
         />
 
         {/* Nav overlay */}
-        <nav className="absolute inset-x-0 top-0 flex items-center justify-between px-8 py-6 md:px-12">
+        <nav className="absolute inset-x-0 top-0 flex items-center justify-between px-6 py-6 md:px-12">
           <span className="font-heading text-xl tracking-widest text-linen">
             HADAR
           </span>
@@ -119,7 +119,7 @@ export default function HomePage() {
               {tNav('menu')}
             </button>
             <button
-              className={`rounded-full border border-linen px-5 py-2 ${bodyFont} text-sm font-medium text-linen transition hover:bg-linen hover:text-ink`}
+              className={`hidden rounded-full border border-linen px-5 py-2 ${bodyFont} text-sm font-medium text-linen transition hover:bg-linen hover:text-ink md:block`}
             >
               {tNav('contact')}
             </button>
@@ -134,7 +134,7 @@ export default function HomePage() {
         />
 
         {/* Texte principal, dynamique par slide */}
-        <div className="absolute inset-x-0 bottom-24 px-8 md:px-12">
+        <div className="absolute inset-x-0 bottom-24 px-6 md:px-12">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeSlide.key}
@@ -143,10 +143,10 @@ export default function HomePage() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className={`${bodyFont} max-w-2xl text-balance text-3xl font-bold leading-tight text-linen md:text-5xl`}>
+              <h1 className={`${bodyFont} max-w-full text-balance text-2xl font-bold leading-tight tracking-tight text-linen sm:max-w-2xl sm:text-3xl sm:tracking-normal md:text-5xl`}>
                 {t(`${activeSlide.key}.title`)}
               </h1>
-              <p className={`mt-4 max-w-xl ${bodyFont} text-pretty text-base text-linen/90 md:text-lg`}>
+              <p className={`mt-4 max-w-full ${bodyFont} text-pretty text-sm text-linen/90 sm:max-w-xl sm:text-base md:text-lg`}>
                 {t(`${activeSlide.key}.subtitle`)}
               </p>
             </motion.div>
