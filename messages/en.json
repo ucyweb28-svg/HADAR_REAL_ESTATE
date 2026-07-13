@@ -3,11 +3,10 @@
     "menu": "Menu",
     "closeMenu": "Close menu",
     "method": "Method",
-    "groupPurchase": "Group purchases",
-    "individualTransactions": "Individual transactions",
-    "zones": "Areas",
+    "projects": "Projects",
     "founder": "Founder",
-    "contact": "Contact us"
+    "contact": "Contact",
+    "contactCta": "Contact us"
   },
   "home": {
     "hero": {

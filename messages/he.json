@@ -2,12 +2,11 @@
   "nav": {
     "menu": "תפריט",
     "closeMenu": "סגור תפריט",
-    "method": "השיטה",
-    "groupPurchase": "רכישות קבוצתיות",
-    "individualTransactions": "עסקאות פרטניות",
-    "zones": "אזורים",
+    "method": "שיטה",
+    "projects": "פרויקטים",
     "founder": "המייסד",
-    "contact": "צור קשר"
+    "contact": "צור קשר",
+    "contactCta": "צור קשר"
   },
   "home": {
     "hero": {

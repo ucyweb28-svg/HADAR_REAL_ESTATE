@@ -121,7 +121,7 @@ export default function HomePage() {
             <button
               className={`hidden rounded-full border border-linen px-5 py-2 ${bodyFont} text-sm font-medium text-linen transition hover:bg-linen hover:text-ink md:block`}
             >
-              {tNav('contact')}
+              {tNav('contactCta')}
             </button>
           </div>
         </nav>
