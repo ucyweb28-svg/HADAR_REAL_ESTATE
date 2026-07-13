@@ -110,7 +110,9 @@ export default function HomePage() {
   const bodyFont = locale === 'he' ? 'font-hebrew' : 'font-body';
   const [current, setCurrent] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  // Vidéos uniquement sur desktop : sur mobile on garde le poster image.
+  // Vidéos uniquement sur desktop (≥ lg / 1024px). Tablette + mobile (< lg)
+  // gardent l'image statique en fond, avec exactement le même regroupement de
+  // slides que desktop (0-1 sur un fond, 2-3 sur l'autre).
   const [isDesktop, setIsDesktop] = useState(false);
   // Les 2 vidéos sont montées en permanence et jouent en fond ; on ne fait que
   // croiser leur opacité. On n'affiche une vidéo cible qu'une fois qu'elle a
@@ -119,7 +121,7 @@ export default function HomePage() {
   const [displayedIndex, setDisplayedIndex] = useState(0);
 
   useEffect(() => {
-    const mq = window.matchMedia('(min-width: 768px)');
+    const mq = window.matchMedia('(min-width: 1024px)');
     const update = () => setIsDesktop(mq.matches);
     update();
     mq.addEventListener('change', update);
@@ -177,10 +179,13 @@ export default function HomePage() {
       {/* Section Hero (fond ink) */}
       <div className="md:p-6">
         <div className="relative h-[100dvh] w-full overflow-hidden md:h-[calc(100vh-3rem)] md:rounded-2xl">
-        {/* Fond vidéo — les 2 vidéos sont montées en permanence, préchargées et
-            jouées en fond ; on ne fait que croiser leur opacité (jamais de
-            démontage/remontage → plus de résidu ni de flash noir). Pas de scale
-            Ken Burns (le mouvement du drone suffit). Sur mobile : poster image. */}
+        {/* Fond vidéo (desktop ≥ lg uniquement) — les 2 vidéos sont montées en
+            permanence, préchargées et jouées en fond ; on ne fait que croiser
+            leur opacité (jamais de démontage/remontage → plus de résidu ni de
+            flash noir). Pas de scale Ken Burns (le mouvement du drone suffit).
+            Tablette + mobile (< lg) : image poster de la vidéo active, donc même
+            regroupement (0-1 → hero-jerusalem, 2-3 → hero-batyam), l'image ne
+            change qu'entre le texte 1 et le texte 2. */}
         {isDesktop ? (
           videos.map((video, i) => (
             <motion.video
