@@ -25,44 +25,41 @@ const scrollCtaIconVariants = {
   hover: { rotate: 45 },
 };
 
-// Carrousel : on alterne vidéo / image. Les slides « vidéo » gardent leur image
-// existante en poster (chargement + navigateurs sans autoplay) et retombent sur
-// cette image sur mobile (la vidéo n'est chargée que sur desktop).
-type Slide = {
-  key: string;
+// 2 vidéos de fond seulement. Les images existantes ne servent plus que de
+// poster (chargement / autoplay bloqué) et de fallback mobile (la vidéo n'est
+// chargée que sur desktop).
+type Video = {
+  src: string;
   poster: string;
   alt: string;
-  overlay: string;
-  video?: string;
+};
+
+const videos: Video[] = [
+  {
+    src: '/videos/hero-video-cityscape.mp4',
+    poster: '/images/hero/hero-jerusalem.webp',
+    alt: 'Vue aérienne de Jérusalem',
+  },
+  {
+    src: '/videos/hero-video-ramatgan.mp4',
+    poster: '/images/hero/hero-batyam.webp',
+    alt: 'Vue aérienne de Ramat Gan',
+  },
+];
+
+// 4 blocs de texte (titre + sous-titre par clé de traduction), chacun rattaché
+// à l'une des 2 vidéos. Passer du texte 0 au texte 1 garde la même vidéo (0) :
+// le fond ne redémarre pas. Le texte 1 → 2 change réellement de vidéo (0 → 1).
+type Slide = {
+  key: string;
+  video: number;
 };
 
 const slides: Slide[] = [
-  {
-    key: 'jerusalem',
-    poster: '/images/hero/hero-jerusalem.webp',
-    video: '/videos/hero-video-cityscape.mp4',
-    alt: 'Villa à Jérusalem',
-    overlay: 'from-ink/80 via-ink/10',
-  },
-  {
-    key: 'telaviv',
-    poster: '/images/hero/hero-telaviv.webp',
-    alt: 'Immeuble à Tel Aviv',
-    overlay: 'from-ink/90 via-ink/40',
-  },
-  {
-    key: 'batyam',
-    poster: '/images/hero/hero-batyam.webp',
-    video: '/videos/hero-video-ramatgan.mp4',
-    alt: 'Bord de mer à Bat Yam',
-    overlay: 'from-ink/90 via-ink/50',
-  },
-  {
-    key: 'entrance',
-    poster: '/images/hero/hero-entrance.webp',
-    alt: 'Entrée de villa',
-    overlay: 'from-ink/80 via-ink/10',
-  },
+  { key: 'jerusalem', video: 0 },
+  { key: 'telaviv', video: 0 },
+  { key: 'batyam', video: 1 },
+  { key: 'entrance', video: 1 },
 ];
 
 // Courbe d'easing douce (easeOutExpo-like), typée en tuple pour Framer Motion.
@@ -150,62 +147,60 @@ export default function HomePage() {
   }
 
   const activeSlide = slides[current];
+  const videoIndex = activeSlide.video;
+  const activeVideo = videos[videoIndex];
 
   return (
     <main className="min-h-screen bg-ink">
       {/* Section Hero (fond ink) */}
       <div className="md:p-6">
         <div className="relative h-[100dvh] w-full overflow-hidden md:h-[calc(100vh-3rem)] md:rounded-2xl">
-        {/* Slides image */}
+        {/* Fond vidéo — keyé par la vidéo (pas par le texte) : ne remonte donc
+            que lors d'un vrai changement de vidéo (texte 1 → 2). Pas de scale
+            Ken Burns sur la vidéo (le mouvement du drone suffit et le scale
+            provoquait un tremblement) : seule l'opacité s'anime au changement. */}
         <AnimatePresence>
           <motion.div
-            key={current}
+            key={videoIndex}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1 }}
+            style={{ willChange: 'opacity' }}
             className="absolute inset-0"
           >
-            <motion.div
-              initial={{ scale: 1 }}
-              animate={{ scale: 1.08 }}
-              transition={{ duration: 6, ease: 'linear' }}
-              className="relative h-full w-full"
-            >
-              {activeSlide.video && isDesktop ? (
-                <video
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  poster={activeSlide.poster}
-                  className="h-full w-full object-cover"
-                >
-                  <source src={activeSlide.video} type="video/mp4" />
-                </video>
-              ) : (
-                <Image
-                  src={activeSlide.poster}
-                  alt={activeSlide.alt}
-                  fill
-                  priority
-                  sizes="100vw"
-                  quality={90}
-                  className="object-cover"
-                />
-              )}
-            </motion.div>
+            {isDesktop ? (
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                poster={activeVideo.poster}
+                className="h-full w-full object-cover"
+              >
+                <source src={activeVideo.src} type="video/mp4" />
+              </video>
+            ) : (
+              <Image
+                src={activeVideo.poster}
+                alt={activeVideo.alt}
+                fill
+                priority
+                sizes="100vw"
+                quality={90}
+                className="object-cover"
+              />
+            )}
           </motion.div>
         </AnimatePresence>
 
         {/* Dégradé haut : lisibilité du nav sur les ~20% supérieurs, transparent
             ensuite (le centre reste dégagé pour voir le ciel / le mouvement) */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-1/5 bg-gradient-to-b from-ink/70 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-1/5 bg-gradient-to-b from-ink/80 to-transparent" />
 
-        {/* Dégradé bas, réglé par image (lisibilité du titre) */}
-        <div
-          className={`pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t ${activeSlide.overlay} to-transparent`}
-        />
+        {/* Dégradé bas renforcé : ink/90 au plus sombre, sur h-2/3, pour garder
+            le titre lisible même sur les zones lumineuses de la vidéo */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent" />
 
         {/* Nav overlay */}
         <nav className="absolute inset-x-0 top-0 flex items-center justify-between px-6 py-6 md:px-12">
