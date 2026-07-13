@@ -144,7 +144,7 @@ export default function MenuOverlay({
                   alt="Hadar Invest"
                   width={1280}
                   height={357}
-                  className="h-7 w-auto md:h-9"
+                  className="h-10 w-auto md:h-14"
                 />
                 <button
                   type="button"

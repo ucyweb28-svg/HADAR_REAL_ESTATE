@@ -115,7 +115,7 @@ export default function HomePage() {
             width={1280}
             height={357}
             priority
-            className="h-7 w-auto md:h-9"
+            className="h-10 w-auto md:h-14"
           />
           <div className="flex items-center gap-5">
             <motion.button
