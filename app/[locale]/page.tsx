@@ -109,9 +109,14 @@ export default function HomePage() {
 
         {/* Nav overlay */}
         <nav className="absolute inset-x-0 top-0 flex items-center justify-between px-6 py-6 md:px-12">
-          <span className="font-heading text-xl tracking-widest text-linen">
-            HADAR
-          </span>
+          <Image
+            src="/logo/logo.png"
+            alt="Hadar Invest"
+            width={1280}
+            height={357}
+            priority
+            className="h-7 w-auto md:h-9"
+          />
           <div className="flex items-center gap-5">
             <motion.button
               type="button"
@@ -159,8 +164,9 @@ export default function HomePage() {
           </AnimatePresence>
         </div>
 
-        {/* Vignettes en bas à gauche */}
-        <div className="absolute bottom-8 start-8 flex gap-2 md:start-12">
+        {/* Vignettes en bas à gauche — conteneur de même hauteur que le bouton
+            flèche, barres centrées verticalement pour un alignement optique */}
+        <div className="absolute bottom-6 start-8 flex h-11 items-center gap-2 md:bottom-12 md:start-12 md:h-14">
           {slides.map((slide, index) => (
             <button
               key={slide.key}
@@ -181,7 +187,7 @@ export default function HomePage() {
           initial="rest"
           whileHover="hover"
           transition={{ duration: 0.3, ease: 'easeOut' }}
-          className="absolute bottom-8 end-8 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-ember md:bottom-12 md:end-12 md:h-14 md:w-14"
+          className="absolute bottom-6 end-8 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-ember md:bottom-12 md:end-12 md:h-14 md:w-14"
           aria-label="Découvrir la suite"
         >
           <motion.span variants={scrollCtaIconVariants} transition={{ duration: 0.3, ease: 'easeOut' }}>

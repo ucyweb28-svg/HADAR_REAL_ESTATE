@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -138,7 +139,13 @@ export default function MenuOverlay({
 
             <div className="relative z-30 flex flex-1 flex-col">
               <div className="flex items-center justify-between">
-                <span className="font-heading text-xl tracking-widest text-linen">HADAR</span>
+                <Image
+                  src="/logo/logo.png"
+                  alt="Hadar Invest"
+                  width={1280}
+                  height={357}
+                  className="h-7 w-auto md:h-9"
+                />
                 <button
                   type="button"
                   onClick={onClose}
